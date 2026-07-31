@@ -15,3 +15,10 @@ Development of RCUT continued beyond the versions contained in this archive. For
 RCUT is released under the **MIT License**. You are free to use, modify, copy, merge, publish, distribute, sublicense, and/or sell copies of the software, provided that the copyright notice and permission notice are included in all copies or substantial portions of the software.
 
 For the full license terms, please refer to the `LICENSE` file included in this repository.
+
+## Compiler Command
+
+This was originally compiled using the mingw g++ 64-bit compiler
+The command used is:
+
+g++ src/main.cpp -o RCUT.exe -IInclude -LLibraries -lfreeglut -lopengl32 -lglu32 -lgdi32 -lwinmm
