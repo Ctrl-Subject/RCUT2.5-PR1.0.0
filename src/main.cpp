@@ -104,8 +104,8 @@ void drawRays(int screenH, int screenW, float FOV)
         float rayDirX = cos(ra);
         float rayDirY = sin(ra);
 
-        int mapx = (int)(PlayerX / TILE);
-        int mapyY = (int)(PlayerY / TILE);
+        int rayTileX = (int)(PlayerX / TILE);
+        int rayTileY = (int)(PlayerY / TILE);
 
         float deltaDistX = (fabs(rayDirX) < 0.0001f) ? 1e30f : fabs(1.0f / rayDirX);
         float deltaDistY = (fabs(rayDirY) < 0.0001f) ? 1e30f : fabs(1.0f / rayDirY);
@@ -115,18 +115,18 @@ void drawRays(int screenH, int screenW, float FOV)
 
         if(rayDirX < 0){
             stepx = -1;
-            sideDistX = (PlayerX/TILE - mapx) * deltaDistX;
+            sideDistX = (PlayerX/TILE - rayTileX) * deltaDistX;
         } else {
             stepx = 1;
-            sideDistX = (mapx + 1.0f - PlayerX/TILE) * deltaDistX;
+            sideDistX = (rayTileX + 1.0f - PlayerX/TILE) * deltaDistX;
         }
 
         if(rayDirY < 0){
             stepy = -1;
-            sideDistY = (PlayerY/TILE - mapyY) * deltaDistY;
+            sideDistY = (PlayerY/TILE - rayTileY) * deltaDistY;
         } else {
             stepy = 1;
-            sideDistY = (mapyY + 1.0f - PlayerY/TILE) * deltaDistY;
+            sideDistY = (rayTileY + 1.0f - PlayerY/TILE) * deltaDistY;
         }
 
         int hit = 0, side, hitType = 0;
@@ -134,22 +134,22 @@ void drawRays(int screenH, int screenW, float FOV)
         while(!hit){
             if(sideDistX < sideDistY){
                 sideDistX += deltaDistX;
-                mapx += stepx;
+                rayTileX += stepx;
                 side = 0;
             } else {
                 sideDistY += deltaDistY;
-                mapyY += stepy;
+                rayTileY += stepy;
                 side = 1;
             }
 
             // stop at map bounds
-            if(mapx < 0 || mapx >= mapx || mapyY < 0 || mapyY >= mapyY){
+            if(rayTileX < 0 || rayTileX >= mapx || rayTileY < 0 || rayTileY >= mapyY){
                 hit = 1;
                 hitType = 0;
                 break;
             }
 
-            int tile = map[mapyY * mapx + mapx];
+            int tile = map[rayTileY * mapx + rayTileX];
             if(tile != 0){
                 hit = 1;
                 hitType = tile;
@@ -337,7 +337,7 @@ int main(int argc,char** argv)
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(win.width, win.height);
-    glutCreateWindow("PlayerAnglecman");
+    glutCreateWindow("Pacman");
     glutSetCursor(GLUT_CURSOR_NONE);
 
     init();
@@ -347,7 +347,7 @@ int main(int argc,char** argv)
     glutKeyboardUpFunc(keyUp);
     glutSpecialFunc(skeyDown);
 	glutSpecialUpFunc(skeyUp);
-	glutPlayerAnglessiveMotionFunc(mouseMove);
+	glutPassiveMotionFunc(mouseMove);
 
     glutTimerFunc(0,timer,0);
     glutMainLoop();
