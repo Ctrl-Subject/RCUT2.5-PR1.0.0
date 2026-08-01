@@ -1,7 +1,22 @@
 #define GLUT_DISABLE_ATEXIT_HACK
 
 #include <GL/freeglut.h>
+#include <windows.h>
+
+void ConfineCursorToWindow()
+{
+    HWND hwnd = GetForegroundWindow(); // the GLUT window, assuming it has focus right after creation
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    POINT topLeft = { rect.left, rect.top };
+    POINT bottomRight = { rect.right, rect.bottom };
+    ClientToScreen(hwnd, &topLeft);
+    ClientToScreen(hwnd, &bottomRight);
+    RECT screenRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+    ClipCursor(&screenRect); // confines the OS cursor so it cannot leave the window bounds
+}
 #include <cmath>
+#include <cstdio>
 
 #define PI 3.1415926535f
 
@@ -15,6 +30,7 @@ float rotSpeed = 0.05f;
 bool keys[256] = {0};
 bool skeys[256] = {0};
 bool ignoreWarp = false;
+int frameCount = 0; // used by the in-game FPS counter
 
 const int TILE = 64;
 
@@ -302,6 +318,7 @@ void update()
 
 void display()
 {
+    frameCount++;
     glClear(GL_COLOR_BUFFER_BIT);
     drawRays(win.height, win.width, PI/3);
     drawPointerBox();
@@ -315,6 +332,15 @@ void timer(int v){
 	update(); 
 	glutPostRedisplay();
 	glutTimerFunc(16,timer,0); 
+}
+
+void fpsTimer(int v)
+{
+    char title[64];
+    sprintf(title, "Pacman - FPS: %d", frameCount);
+    glutSetWindowTitle(title);
+    frameCount = 0;
+    glutTimerFunc(1000, fpsTimer, 0); // recalculates once per second
 }
 
 void keyDown(unsigned char k,int x,int y){ keys[k]=1; }
@@ -338,6 +364,7 @@ int main(int argc,char** argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(win.width, win.height);
     glutCreateWindow("Pacman");
+    ConfineCursorToWindow();
     glutSetCursor(GLUT_CURSOR_NONE);
 
     init();
@@ -350,5 +377,6 @@ int main(int argc,char** argv)
 	glutPassiveMotionFunc(mouseMove);
 
     glutTimerFunc(0,timer,0);
+    glutTimerFunc(1000,fpsTimer,0);
     glutMainLoop();
 }
