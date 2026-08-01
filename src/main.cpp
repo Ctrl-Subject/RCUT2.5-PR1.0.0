@@ -2,19 +2,6 @@
 
 #include <GL/freeglut.h>
 #include <windows.h>
-
-void ConfineCursorToWindow()
-{
-    HWND hwnd = GetForegroundWindow(); // the GLUT window, assuming it has focus right after creation
-    RECT rect;
-    GetClientRect(hwnd, &rect);
-    POINT topLeft = { rect.left, rect.top };
-    POINT bottomRight = { rect.right, rect.bottom };
-    ClientToScreen(hwnd, &topLeft);
-    ClientToScreen(hwnd, &bottomRight);
-    RECT screenRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
-    ClipCursor(&screenRect); // confines the OS cursor so it cannot leave the window bounds
-}
 #include <cmath>
 #include <cstdio>
 
@@ -190,7 +177,7 @@ void drawRays(int screenH, int screenW, float FOV)
 
         float lineO = (screenH/2) - lineH/2;
 
-        // 🎨 COLOR LOGIC
+        // COLOR LOGIC
         if(hitType == 2)         glColor3f(0,0,1);     // blue teleport
         else if(side == 0)       glColor3f(1,0,0);
         else                     glColor3f(0.7,0,0);
@@ -225,6 +212,19 @@ void mouseMove(int x, int y)
 
     ignoreWarp = true;
     glutWarpPointer(centerX, win.height / 2);
+}
+
+void ConfineCursorToWindow()
+{
+    HWND hwnd = GetForegroundWindow(); // the GLUT window, assuming it has focus right after creation
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    POINT topLeft = { rect.left, rect.top };
+    POINT bottomRight = { rect.right, rect.bottom };
+    ClientToScreen(hwnd, &topLeft);
+    ClientToScreen(hwnd, &bottomRight);
+    RECT screenRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+    ClipCursor(&screenRect); // confines the OS cursor so it cannot leave the window bounds
 }
 
 void update()
