@@ -1,24 +1,53 @@
 # RCUT 2.5D Archive
 
-This repository serves as the historical archive for the development of the **RCUT (Rendering Core Utility Toolkit)** 2.5D DDA rendering engine. It contains the complete progression of the project, from its earliest experimental prototypes through to some of the first fully featured 2.5D versions of the engine.
+This repository contains the archive of the **RCUT (Rendering Core Utility Toolkit)** 2.5D DDA raycasting engine. It is organised as a historic snapshot of the project, with the source tree, external dependencies, and a minimal build path for Windows.
 
-RCUT was originally developed as the rendering engine for my **A-Level OCR Computer Science NEA (Non-Exam Assessment)**. The aim was to create a custom 2.5D DDA raycasting engine rather than relying on an existing game engine or rendering framework. As development progressed, the project expanded far beyond its original educational purpose, becoming a standalone rendering toolkit and an important foundation for future graphics technologies.
+## Contents
 
-The purpose of this archive is to preserve that development history, allowing others to explore how the engine evolved over time. Each revision demonstrates different stages of the project's design, optimisation, rendering techniques, and feature implementation. This repository should therefore be viewed as a historical record of RCUT's development rather than the actively maintained version of the engine.
+- `Include/` – public RCUT API header
+- `src/` – engine implementation and example sources
+- `src/Application/` – window, input, audio, and platform bridge code
+- `src/IOStream/` – input handling glue
+- `src/Raycasting/` – raycaster, textures, sprites, and map logic
+- `src/Extern/` – bundled external dependencies and platform headers
 
-RCUT is a product of the **Solar Project**, developed by **GP Software**. Many of the ideas, techniques, and technologies first explored in RCUT have since influenced the wider Solar ecosystem and continue to be developed as part of that project.
+## Build Overview
 
-Development of RCUT continued beyond the versions contained in this archive. For newer releases and ongoing development (January 2026 onwards), please visit the GP Software GitHub organisation or the official GP Software website (once available).
+This archive is intended to build as a DLL on Windows.
+
+## CMake Usage
+
+A `CMakeLists.txt` file is available at the repository root.
+To generate a DLL build with CMake, run:
+
+```powershell
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
+
+cmake -S . -B build_dll -G "MinGW Makefiles" -DRCUT_BUILD_SHARED=ON
+cmake --build build_dll
+```
+
+The output will include `RCUT.dll` and the import library `libRCUT.a`.
+
+## Dependencies
+
+- `freeglut` library and headers (bundled under `src/Extern/Includes/GL` and `src/Extern/Libraries`)
+- `OpenGL` system libraries: `opengl32`, `glu32`, `gdi32`, `winmm`
+- `stb_image.h` for texture loading
+- `miniaudio.h` for audio playback
+
+## Recommended workflow
+
+1. Open a shell in the repository root.
+2. Install MSYS2/MinGW if needed.
+3. Run the build command above.
+4. Use `RCUT.dll` and `libRCUT.a` from the output directory.
+
+## Project Notes
+
+This archive is primarily historic. It documents an engine built as part of a UK A-Level NEA project and preserved as a reference implementation rather than a production library.
 
 ## License
 
-RCUT is released under the **MIT License**. You are free to use, modify, copy, merge, publish, distribute, sublicense, and/or sell copies of the software, provided that the copyright notice and permission notice are included in all copies or substantial portions of the software.
-
-For the full license terms, please refer to the `LICENSE` file included in this repository.
-
-## Compiler Command
-
-This was originally compiled using the mingw g++ 64-bit compiler
-The command used is:
-
-g++ src/main.cpp -o RCUT.exe -IInclude -LLibraries -lfreeglut -lopengl32 -lglu32 -lgdi32 -lwinmm
+RCUT is released under the **MIT License**. See the `LICENSE` file for the full terms.
