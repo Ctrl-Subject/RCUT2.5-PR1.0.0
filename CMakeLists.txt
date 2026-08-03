@@ -31,6 +31,7 @@ set(RCUT_SOURCES
 if(RCUT_BUILD_SHARED)
     add_library(RCUT SHARED ${RCUT_SOURCES})
     target_compile_definitions(RCUT PRIVATE RCUT_BUILD_DLL)
+    set_target_properties(RCUT PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
     add_library(RCUT STATIC ${RCUT_SOURCES})
     target_compile_definitions(RCUT PRIVATE RCUT_STATIC)
@@ -49,7 +50,7 @@ else()
 endif()
 
 if(RCUT_FREEGLUT_LIB)
-    target_link_libraries(RCUT PRIVATE
+    target_link_libraries(RCUT PUBLIC
         ${RCUT_FREEGLUT_LIB}
         opengl32
         glu32
@@ -58,7 +59,7 @@ if(RCUT_FREEGLUT_LIB)
     )
 else()
     message(WARNING "Could not locate libfreeglut.a. The RCUT target will still be configured, but you may need to install FreeGLUT or adjust CMakeLists.txt.")
-    target_link_libraries(RCUT PRIVATE
+    target_link_libraries(RCUT PUBLIC
         freeglut
         opengl32
         glu32

@@ -51,12 +51,6 @@ RCUT_API bool RCUT_Input_IsKeyDown(unsigned char key);
 
 RCUT_API bool RCUT_Input_IsSpecialKeyDown(RCUT_Key key);
 
-// Mouse-look delta in pixels since the last RCUT_Input_Update, already
-// compensated for the warp-to-center trick -- multiply by your
-// sensitivity and feed straight into RCUT_Camera_Rotate.
-float RCUT_Input_GetMouseDeltaX(void);
-float RCUT_Input_GetMouseDeltaY(void);
-
 #ifdef __cplusplus
 }
 #endif

@@ -20,7 +20,7 @@ This archive is intended to build as a DLL on Windows.
 A `CMakeLists.txt` file is available at the repository root.
 To generate a DLL build with CMake, run:
 
-```powershell
+```Cmake
 cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build
 

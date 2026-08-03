@@ -1,5 +1,5 @@
-#include "RCUT_IOSTREAM.h"
 #include "RCUT_freeGlut_Bridge.h"
+#include "RCUT.h"
 
 #include <string.h>
 
