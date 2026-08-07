@@ -34,7 +34,12 @@ static bool g_musicLoaded = false;
 
 bool RCUT_Audio_Init(void)
 {
-    if (ma_engine_init(NULL, &g_engine) != MA_SUCCESS) return false;
+    if (g_engineReady)
+        return true;
+
+    if (ma_engine_init(NULL, &g_engine) != MA_SUCCESS)
+        return false;
+
     g_engineReady = true;
     return true;
 }
@@ -74,7 +79,11 @@ static int FindFreeSFXSlot(void)
     }
     if (g_sfxCount == g_sfxCapacity) {
         g_sfxCapacity = g_sfxCapacity ? g_sfxCapacity * 2 : 8;
-        g_sfx = (SFXSlot*)realloc(g_sfx, sizeof(SFXSlot) * g_sfxCapacity);
+
+        SFXSlot* temp = (SFXSlot*)realloc(g_sfx, sizeof(SFXSlot) * g_sfxCapacity);
+        if (temp == NULL)
+            return -1;
+        g_sfx = temp;
     }
     return g_sfxCount++;
 }
@@ -86,7 +95,7 @@ RCUT_SoundId RCUT_Audio_LoadSFX(const char* path)
     // Validate the file up front (rather than discovering a bad path the
     // first time something tries to play it) by test-loading one voice.
     ma_sound testSound;
-    if (ma_sound_init_from_file(&g_engine, path, MA_SOUND_FLAG_DECODE, NULL, NULL, &testSound) != MA_SUCCESS) {
+    if (ma_sound_init_from_file(&g_engine, path, 0, NULL, NULL, &testSound) != MA_SUCCESS) {
         return -1;
     }
 
@@ -111,7 +120,7 @@ void RCUT_Audio_PlaySFX(RCUT_SoundId id, float volume)
     Voice* voice = &s->voices[v];
 
     if (!voice->initialized) {
-        if (ma_sound_init_from_file(&g_engine, s->path, MA_SOUND_FLAG_DECODE, NULL, NULL, &voice->sound) != MA_SUCCESS) {
+        if (ma_sound_init_from_file(&g_engine, s->path, 0, NULL, NULL, &voice->sound) != MA_SUCCESS) {
             return;
         }
         voice->initialized = true;
@@ -137,7 +146,7 @@ bool RCUT_Music_Load(const char* path)
         g_musicLoaded = false;
     }
 
-    if (ma_sound_init_from_file(&g_engine, path, MA_SOUND_FLAG_STREAM, NULL, NULL, &g_music) != MA_SUCCESS) {
+    if (ma_sound_init_from_file(&g_engine, path, 0, NULL, NULL, &g_music) != MA_SUCCESS) {
         return false;
     }
     g_musicLoaded = true;
